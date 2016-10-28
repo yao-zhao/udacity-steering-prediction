@@ -1,5 +1,9 @@
+# src/
+.catkin_workspace
 data/
 *.gz
+devel/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
