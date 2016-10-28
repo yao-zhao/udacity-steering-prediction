@@ -1,7 +1,10 @@
 # src/
 .catkin_workspace
-data/
+*.bag
 *.gz
+*.png
+*.jpeg
+*.jpg
 devel/
 
 
