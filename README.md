@@ -6,19 +6,37 @@ prediction of steering wheel using real driving data, Udacity challenge 2
 
 ## run build_catkin.sh to setup environment
 
-## to start with ros
+## Running
+
+### start core
+~~~
+roscore
+~~~
+
+### play back data
+~~~
+rosbag play --clock *.bag 
+~~~
+
+### visualize
+~~~
+roslaunch udacity_launch rviz.launch
+~~~
+
+### log
+~~~
+roslaunch udacity_launch logging.launch republish_raw2compressed_images:=true bagPath:="/media/yz/Data/udacity_SDC/"
+
+roslaunch udacity_launch logging.launch republish_raw2compressed_images:=true bagPath:="/media/yz/Data/udacity_SDC/"
 
 ~~~
-# start core
-roscore
 
-# go to data folder
-cd data
 
-# play back data
+<!-- roslaunch udacity_launch bag_play.launch -->
 
-rosbag play --clock *.bag roslaunch
+## useful commands
 
-roslaunch udacity_launch bag_play.launch
-
+- check if a package exist
+~~~
+rospack find udacity_launch
 ~~~
