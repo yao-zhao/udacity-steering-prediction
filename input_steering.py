@@ -1,7 +1,3 @@
-# reading the input from files
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 import os
 
@@ -25,7 +21,7 @@ tf.app.flags.DEFINE_string('test_file',
                            """image list of training set""")   
 tf.app.flags.DEFINE_string('test_dir', 'data/train',
                           """train directory""")
-tf.app.flags.DEFINE_integer('NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN', 45000,
+tf.app.flags.DEFINE_integer('num_examples_train', 45000,
                           """number of examples per epoch in training""")  
  
 # parse the steering csv file
@@ -84,6 +80,10 @@ def _generate_batch(image, label, batch_size, min_after_dequeue=10000,
 # data augmentation
 def _preprocess_image(image):
     image  =tf.image.resize_images(image, [240, 320])
+    image = tf.random_crop(image, [224, 288, 3])
+    image = tf.image.random_brightness(image, max_delta=63)
+    image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
+    image = tf.image.per_image_whitening(image)
     return image
 
 # input pipline

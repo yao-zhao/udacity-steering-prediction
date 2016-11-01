@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 #from six.moves import xrange
 
@@ -27,7 +24,7 @@ tf.app.flags.DEFINE_float('stddev', 0.1,
 def _get_variable(name,
                   shape,
                   initializer,
-                  wd=None,
+                  weight_decay=None,
                   trainable=True):
     dtype = tf.float16 if FLAGS.use_fp16 else tf.float32
     with tf.device('/cpu:0'):
@@ -36,8 +33,9 @@ def _get_variable(name,
                               initializer=initializer,
                               dtype=dtype,
                               trainable=trainable)
-    if wd is not None:
-        weight_decay = tf.mul(tf.nn.l2_loss(var), wd, name=name+'_weight_loss')
+    if weight_decay is not None:
+        weight_decay = tf.mul(tf.nn.l2_loss(var), weight_decay,
+                              name=name+'_weight_loss')
         tf.add_to_collection(FLAGS.LOSSES_COLLECTION, weight_decay)
     return var
 
@@ -53,7 +51,6 @@ def conv(x, numoutput, ksize=3, stride=1,
     initializer = tf.truncated_normal_initializer(stddev=stddev)
     weights = _get_variable('weights',
                             shape=shape,
-                            dtype=FLAGS.dtype,
                             initializer=initializer,
                             weight_decay=wd)
     return tf.nn.conv2d(x, weights, [1, stride, stride, 1], padding='SAME')
@@ -69,10 +66,11 @@ def bn(x, moving_average_decay=None, bn_epsilon=None):
     # averaging axis
     axis = list(range(len(x_shape) - 1))
     # rescale and baise
-    beta = _get_variable('beta',
+    beta = _get_variable('bias',
                          depth,
+                         weight_decay=FLAGS.weight_decay, # do i need this?
                          initializer=tf.zeros_initializer)
-    gamma = _get_variable('gamma',
+    gamma = _get_variable('scale',
                           depth,
                           initializer=tf.ones_initializer)
     # save for moving average
@@ -91,11 +89,14 @@ def bn(x, moving_average_decay=None, bn_epsilon=None):
                              moving_variance, variance, moving_average_decay)
     tf.add_to_collection(FLAGS.UPDATE_OPS_COLLECTION, update_moving_mean)
     tf.add_to_collection(FLAGS.UPDATE_OPS_COLLECTION, update_moving_variance)
-    mean, variance = control_flow_ops.cond(
-        FLAGS.is_training, lambda: (mean, variance),
-        lambda: (moving_mean, moving_variance))
-    x = tf.nn.batch_normalization(x, mean, variance, beta, gamma, bn_epsilon)
-    return x
+    mean, variance = \
+        control_flow_ops.cond(tf.convert_to_tensor(FLAGS.is_training,
+                                                   dtype='bool',
+                                                   name='is_training'),
+                              lambda: (mean, variance),
+                              lambda: (moving_mean, moving_variance))
+    return tf.nn.batch_normalization(x, mean, variance, beta, gamma, bn_epsilon)
+
     
 # activation
 def activation(x):
@@ -110,7 +111,7 @@ def max_pool(x, ksize=3, stride=2):
 
 # global ave pool
 def global_ave_pool(x):
-    x = tf.reduce_mean(x, reduction_indices=[1, 2], name="global_avg_pool")
+    return tf.reduce_mean(x, reduction_indices=[1, 2], name="global_avg_pool")
 
 # fully connected
 def fc(x, numoutput, wd=None, stddev=None):

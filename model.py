@@ -1,6 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
 
 #from six.moves import xrange
 
@@ -18,13 +15,13 @@ tf.app.flags.DEFINE_string('UPDATE_OPS_COLLECTION', 'update_ops',
 tf.app.flags.DEFINE_string('LOSSES_COLLECTION', 'losses',
                           """ collection of ops to be updated""")
 # training
-tf.app.flags.DEFINE_integer('NUM_EPOCHS_PER_DECAY', 4,
+tf.app.flags.DEFINE_integer('num_epochs_per_decay', 4,
                           """number of epochs per decay""")
-tf.app.flags.DEFINE_float('INITIAL_LEARNING_RATE', 0.01,
+tf.app.flags.DEFINE_float('initial_learning_rate', 0.01,
                           """initial learning rate""")
-tf.app.flags.DEFINE_float('LEARNING_RATE_DECAY_FACTOR', 0.1,
+tf.app.flags.DEFINE_float('learning_rate_decay', 0.1,
                           """decay factor of learning rate""")
-tf.app.flags.DEFINE_float('MOMENTUM', 0.9,
+tf.app.flags.DEFINE_float('momentum', 0.9,
                           """momentum of optimization""")
 # get input train
 def get_train_input():
@@ -32,32 +29,31 @@ def get_train_input():
     dtype = tf.float16 if FLAGS.use_fp16 else tf.float32
     images = tf.cast(images, dtype)
     labels = tf.cast(labels, dtype)
-    images = tf.random_crop(images, [FLAGS.batch_size, 224, 288, 3])
-    #    image_batch = tf.image.random_brightness(image_batch, max_delta=63)
-    #    image_batch = tf.image.random_contrast(image_batch, lower=0.2, upper=1.8)
-    # Subtract off the mean and divide by the variance of the pixels.
-    images = tf.image.per_image_whitening(images)
     return images, labels
 
-# inference of res net
+# inference of resnet
 def inference(images):
     with tf.variable_scope('1'):
-        conv = common.conv(images, 64, ksize=7, stride=2)
-        conv = common.bn(conv)
-        pool = common.max_pool(conv)
+        conv1 = common.conv(images, 64, ksize=7, stride=2)
+        conv1 = common.bn(conv1)
+        pool1 = common.max_pool(conv1)
     with tf.variable_scope('2'):
-        stack = common.stack(pool, common.res_block, [64, 64, 64])
-        pool = common.max_pool(stack)
+        stack2 = common.stack(pool1, common.res_block, [64, 64, 64])
+        pool2 = common.max_pool(stack2)
     with tf.variable_scope('3'):
-        stack = common.stack(pool, common.res_block, [128, 128, 128, 128])
-        pool = common.max_pool(stack)
+        stack3 = common.stack(pool2, common.res_block, [128, 128, 128, 128])
+        pool3 = common.max_pool(stack3)
     with tf.variable_scope('4'):
-        stack = common.stack(pool, common.res_block, [256, 256, 256,
+        stack4 = common.stack(pool3, common.res_block, [256, 256, 256,
                                                       256, 256, 256])
-        pool = common.max_pool(conv)
+        pool4 = common.max_pool(stack4)
     with tf.variable_scope('5'):
-        stack = common.stack(pool, common.res_block, [512, 512, 512])                                                     
-        pool = common.global_ave_pool(stack)
+        stack5 = common.stack(pool4, common.res_block, [512, 512, 512])                                                     
+        pool5 = common.global_ave_pool(stack5)
+    with tf.variable_scope('fc'):
+        fc = common.fc(pool5, 1)
+    return fc
+
 
 # loss 
 def loss(outputs, labels):
@@ -68,18 +64,18 @@ def loss(outputs, labels):
 def train_op(total_loss, global_step):
     # learn rate
     num_batches_per_epoch = \
-        FLAGS.NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN/FLAGS.batch_size
-    decay_steps = int(num_batches_per_epoch * FLAGS.NUM_EPOCHS_PER_DECAY)
-    lr = tf.train.exponential_decay(FLAGS.INITIAL_LEARNING_RATE,
+        FLAGS.num_examples_train/FLAGS.batch_size
+    decay_steps = int(num_batches_per_epoch * FLAGS.num_epochs_per_decay)
+    lr = tf.train.exponential_decay(FLAGS.initial_learning_rate,
                                     global_step,
                                     decay_steps,
-                                    FLAGS.LEARNING_RATE_DECAY_FACTOR,
+                                    FLAGS.learning_rate_decay,
                                     staircase=True)
     # summary
     tf.scalar_summary('learning_rate', lr)
     tf.scalar_summary('total_loss', total_loss)
     # optimization
-    opt = tf.train.MomentumOptimizer(lr, FLAGS.MOMENTUM, use_nesterov=True)
+    opt = tf.train.MomentumOptimizer(lr, FLAGS.momentum, use_nesterov=True)
     grads = opt.compute_gradients(total_loss)
     apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
     # batch norm update
