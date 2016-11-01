@@ -26,6 +26,7 @@ def train():
         # set flag to training
         FLAGS.batch_size=8
         FLAGS.is_training=True
+        FLAGS.minimal_summaries=True
         # global step
         global_step = tf.Variable(0, trainable=False)
         # get training batch
@@ -59,7 +60,7 @@ def train():
         max_iter = int(FLAGS.max_epoch*
                        FLAGS.num_examples_train/FLAGS.batch_size)
         print('total iteration:', str(max_iter))
-        for step in xrange(1):
+        for step in xrange(max_iter):
               start_time = time.time()
               _, loss_value = sess.run([train_op, loss])
               duration = time.time() - start_time
