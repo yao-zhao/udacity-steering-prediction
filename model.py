@@ -23,6 +23,7 @@ tf.app.flags.DEFINE_float('learning_rate_decay', 0.1,
                           """decay factor of learning rate""")
 tf.app.flags.DEFINE_float('momentum', 0.9,
                           """momentum of optimization""")
+
 # get input train
 def get_train_input():
     images, labels = input_steering.input_pipline(FLAGS.batch_size)

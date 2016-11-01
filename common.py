@@ -6,11 +6,11 @@ from tensorflow.python.ops import control_flow_ops
 from tensorflow.python.training import moving_averages
 
 FLAGS = tf.app.flags.FLAGS
-
 tf.app.flags.DEFINE_boolean('use_fp16', False,
                             """Train the model using fp16.""")
 tf.app.flags.DEFINE_boolean('is_training', False,
                             """Boolean to decide if the model is training""")
+                            
 # model params
 tf.app.flags.DEFINE_float('bn_moving_average_decay', 0.999,
                           """ Batch normalizating movine average decay""")
