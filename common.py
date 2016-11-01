@@ -10,27 +10,13 @@ from tensorflow.python.training import moving_averages
 
 FLAGS = tf.app.flags.FLAGS
 
-# Basic model parameters.
-tf.app.flags.DEFINE_integer('batch_size', 16,
-                            """Number of images to process in a batch.""")
-tf.app.flags.DEFINE_string('dtype', 'float32',
-                            """Train the model using datatype.""")
-tf.app.flags.DEFINE_boolean('is_training', False,
-                            """Boolean to decide if the model is training""")
-
-UPDATE_OPS_COLLECTION = 'update_ops'  # must be grouped with training op
-LOSSES_COLLECTION = 'losses'
-
-
-
-
 # get variable
 def _get_variable(name,
                   shape,
                   initializer,
                   wd=None,
-                  dtype='float',
                   trainable=True):
+    dtype = tf.float16 if FLAGS.use_fp16 else tf.float32
     with tf.device('/cpu:0'):
         var = tf.get_variable(name,
                               shape=shape,
@@ -39,11 +25,12 @@ def _get_variable(name,
                               trainable=trainable)
     if wd is not None:
         weight_decay = tf.mul(tf.nn.l2_loss(var), wd, name=name+'_weight_loss')
-        tf.add_to_collection(LOSSES_COLLECTION, weight_decay)
+        tf.add_to_collection(FLAGS.LOSSES_COLLECTION, weight_decay)
     return var
 
 # single convolution layer
-def conv(x, numoutput, ksize=3, stride=1, wd=1e-6, stddev=0.1):
+def conv(x, numoutput, ksize=3, stride=1,
+         wd=FLAGS.weight_decay, stddev=FLAGS.stddev):
     filters_in = x.get_shape()[-1]
     shape = [ksize, ksize, filters_in, numoutput]
     initializer = tf.truncated_normal_initializer(stddev=stddev)
@@ -55,7 +42,8 @@ def conv(x, numoutput, ksize=3, stride=1, wd=1e-6, stddev=0.1):
     return tf.nn.conv2d(x, weights, [1, stride, stride, 1], padding='SAME')
 
 # batch normalization
-def bn(x, moving_average_decay=0.999, bn_epsilon=0.0001):
+def bn(x, moving_average_decay=FLAGS.bn_moving_average_decay,
+       bn_epsilon=FLAGS.bn_epsilon):
     x_shape = x.get_shape()
     depth = x_shape[-1:]
     # averaging axis
@@ -81,8 +69,8 @@ def bn(x, moving_average_decay=0.999, bn_epsilon=0.0001):
                          moving_mean, mean, moving_average_decay)
     update_moving_variance = moving_averages.assign_moving_average(\
                              moving_variance, variance, moving_average_decay)
-    tf.add_to_collection(UPDATE_OPS_COLLECTION, update_moving_mean)
-    tf.add_to_collection(UPDATE_OPS_COLLECTION, update_moving_variance)
+    tf.add_to_collection(FLAGS.UPDATE_OPS_COLLECTION, update_moving_mean)
+    tf.add_to_collection(FLAGS.UPDATE_OPS_COLLECTION, update_moving_variance)
     mean, variance = control_flow_ops.cond(
         FLAGS.is_training, lambda: (mean, variance),
         lambda: (moving_mean, moving_variance))
@@ -100,6 +88,10 @@ def max_pool(x, ksize=3, stride=2):
                           strides=[1, stride, stride, 1],
                           padding='SAME')
 
+# global ave pool
+def global_ave_pool(x):
+    x = tf.reduce_mean(x, reduction_indices=[1, 2], name="global_avg_pool")
+
 # fully connected
 def fc(x, numoutput, wd=1e-6, stddev=0.1):
     num_units_in = x.get_shape()[1]
@@ -114,6 +106,23 @@ def fc(x, numoutput, wd=1e-6, stddev=0.1):
                            initializer=tf.zeros_initializer)
     x = tf.nn.xw_plus_b(x, weights, biases)
     return x
+
+## softmax loss
+#def softmax_loss(logits, labels):
+#    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, labels)
+#    cross_entropy_mean = tf.reduce_mean(cross_entropy)
+# 
+#    regularization_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
+#
+#    loss_ = tf.add_n([cross_entropy_mean] + regularization_losses)
+##    tf.scalar_summary('loss', loss_)
+#    return loss_
+    
+# euclidean loss
+def mean_squared_loss(outputs, labels):
+    loss = tf.reduce_mean(tf.squared_difference(outputs, labels))
+    tf.add_to_collection(FLAGS.LOSSES_COLLECTION, loss)
+    return loss
     
 # resnet block
 def res_block(x, numoutput):
@@ -137,8 +146,9 @@ def res_block(x, numoutput):
     return activation(x + shortcut)
     
 # stack of blocks
-def stack(x, func, num):
-    for i in range(num):
+def stack(x, func, numoutputs):
+    for i, numoutput in zip(range(len(numoutputs)), numoutputs):
         with tf.variable_scope(chr(97+i)):
-            x=func(x)
+            x=func(x, numoutput)
     return x
+    

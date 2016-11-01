@@ -4,16 +4,32 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-from six.moves import xrange
 
 import tensorflow as tf
 from tensorflow.python.framework import ops
 from tensorflow.python.framework import dtypes
-from tensorflow.python.training import queue_runner
 
+FLAGS = tf.app.flags.FLAGS
+tf.app.flags.DEFINE_string('train_file',
+                           'data/train/interpolated.csv',
+                           """image list of training set""")   
+tf.app.flags.DEFINE_string('train_dir', 'data/train',
+                          """train directory""")  
+tf.app.flags.DEFINE_string('val_file',
+                           'data/train/interpolated.csv',
+                           """image list of training set""")   
+tf.app.flags.DEFINE_string('val_dir', 'data/train',
+                          """train directory""")  
+tf.app.flags.DEFINE_string('test_file',
+                           'data/train/interpolated.csv',
+                           """image list of training set""")   
+tf.app.flags.DEFINE_string('test_dir', 'data/train',
+                          """train directory""")
+tf.app.flags.DEFINE_integer('NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN', 45000,
+                          """number of examples per epoch in training""")  
+ 
 # parse the steering csv file
-def _read_steering_csv(image_list_file='data/train/interpolated.csv',
-                       datapath='data/train'):
+def _read_steering_csv(image_list_file, datapath):
     f = open(image_list_file, 'r')
     filenames = []
     frameids = []
@@ -68,16 +84,12 @@ def _generate_batch(image, label, batch_size, min_after_dequeue=10000,
 # data augmentation
 def _preprocess_image(image):
     image  =tf.image.resize_images(image, [240, 320, 3])
-    #  distorted_image = tf.random_crop(reshaped_image, [height, width, 3])
-    image = tf.image.random_brightness(image, max_delta=63)
-    image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
-    # Subtract off the mean and divide by the variance of the pixels.
-    image = tf.image.per_image_whitening(image)
+
 
 # input pipline
-def input_pipline(filenames, batch_size, num_epochs=None,
-                  image_list_file='data/train/interpolated.csv',
-                  datapath='data/train'):
+def input_pipline(batch_size, num_epochs=None,
+                  image_list_file=FLAGS.train_file,
+                  datapath=FLAGS.train_dir):
     image_list, label_list, frameid_list = \
         _read_steering_csv(image_list_file=image_list_file,
                            datapath=datapath)
