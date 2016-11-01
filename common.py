@@ -10,6 +10,19 @@ from tensorflow.python.training import moving_averages
 
 FLAGS = tf.app.flags.FLAGS
 
+tf.app.flags.DEFINE_boolean('use_fp16', False,
+                            """Train the model using fp16.""")
+tf.app.flags.DEFINE_boolean('is_training', False,
+                            """Boolean to decide if the model is training""")
+# model params
+tf.app.flags.DEFINE_float('bn_moving_average_decay', 0.999,
+                          """ Batch normalizating movine average decay""")
+tf.app.flags.DEFINE_float('bn_epsilon', 0.0001,
+                          """ Batch normalizating variance epsilon""")
+tf.app.flags.DEFINE_float('weight_decay', 1e-6,
+                          """ Default weight decal value for all parameters""")                         
+tf.app.flags.DEFINE_float('stddev', 0.1,
+                          """ Default initialization std""")
 # get variable
 def _get_variable(name,
                   shape,
@@ -30,7 +43,11 @@ def _get_variable(name,
 
 # single convolution layer
 def conv(x, numoutput, ksize=3, stride=1,
-         wd=FLAGS.weight_decay, stddev=FLAGS.stddev):
+         wd=None, stddev=None):
+    if wd is None:
+        wd = FLAGS.weight_decay
+    if stddev is None:
+        stddev = FLAGS.stddev
     filters_in = x.get_shape()[-1]
     shape = [ksize, ksize, filters_in, numoutput]
     initializer = tf.truncated_normal_initializer(stddev=stddev)
@@ -42,8 +59,11 @@ def conv(x, numoutput, ksize=3, stride=1,
     return tf.nn.conv2d(x, weights, [1, stride, stride, 1], padding='SAME')
 
 # batch normalization
-def bn(x, moving_average_decay=FLAGS.bn_moving_average_decay,
-       bn_epsilon=FLAGS.bn_epsilon):
+def bn(x, moving_average_decay=None, bn_epsilon=None):
+    if moving_average_decay is None:
+        moving_average_decay = FLAGS.bn_moving_average_decay
+    if bn_epsilon is None:
+        bn_epsilon = FLAGS.bn_epsilon
     x_shape = x.get_shape()
     depth = x_shape[-1:]
     # averaging axis
@@ -93,7 +113,11 @@ def global_ave_pool(x):
     x = tf.reduce_mean(x, reduction_indices=[1, 2], name="global_avg_pool")
 
 # fully connected
-def fc(x, numoutput, wd=1e-6, stddev=0.1):
+def fc(x, numoutput, wd=None, stddev=None):
+    if wd is None:
+        wd = FLAGS.weight_decay
+    if stddev is None:
+        stddev = FLAGS.stddev
     num_units_in = x.get_shape()[1]
     weights_initializer = tf.truncated_normal_initializer(
         stddev=stddev)

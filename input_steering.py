@@ -83,8 +83,8 @@ def _generate_batch(image, label, batch_size, min_after_dequeue=10000,
 
 # data augmentation
 def _preprocess_image(image):
-    image  =tf.image.resize_images(image, [240, 320, 3])
-
+    image  =tf.image.resize_images(image, [240, 320])
+    return image
 
 # input pipline
 def input_pipline(batch_size, num_epochs=None,
@@ -93,13 +93,13 @@ def input_pipline(batch_size, num_epochs=None,
     image_list, label_list, frameid_list = \
         _read_steering_csv(image_list_file=image_list_file,
                            datapath=datapath)
-    center_images, cent_labels = _split_list_to_tensor(image_list,
+    center_image_names, cent_labels = _split_list_to_tensor(image_list,
                                                   label_list, frameid_list, 1)
-    input_queue = tf.train.slice_input_producer([center_images, cent_labels],
+    input_queue = tf.train.slice_input_producer([center_image_names,
+                                                 cent_labels],
                                                 num_epochs=None,
                                                 shuffle=True)
     image, label = _read_images_from_disk(input_queue)
     image = _preprocess_image(image)
     return _generate_batch(image, label, batch_size)
-
 

@@ -12,19 +12,6 @@ FLAGS = tf.app.flags.FLAGS
 # basics
 tf.app.flags.DEFINE_integer('batch_size', 16,
                             """Number of images to process in a batch.""")
-tf.app.flags.DEFINE_boolean('use_fp16', False,
-                            """Train the model using fp16.""")
-tf.app.flags.DEFINE_boolean('is_training', False,
-                            """Boolean to decide if the model is training""")
-# model params
-tf.app.flags.DEFINE_float('bn_moving_average_decay', 0.999,
-                          """ Batch normalizating movine average decay""")
-tf.app.flags.DEFINE_float('bn_epsilon', 0.0001,
-                          """ Batch normalizating variance epsilon""")
-tf.app.flags.DEFINE_float('weight_decay', 1e-6,
-                          """ Default weight decal value for all parameters""")                         
-tf.app.flags.DEFINE_float('stddev', 0.1,
-                          """ Default initialization std""")
 # naming
 tf.app.flags.DEFINE_string('UPDATE_OPS_COLLECTION', 'update_ops',
                           """ collection of ops to be updated""")   
@@ -40,7 +27,7 @@ tf.app.flags.DEFINE_float('LEARNING_RATE_DECAY_FACTOR', 0.1,
 tf.app.flags.DEFINE_float('MOMENTUM', 0.9,
                           """momentum of optimization""")
 # get input train
-def get_input_train():
+def get_train_input():
     images, labels = input_steering.input_pipline(FLAGS.batch_size)
     dtype = tf.float16 if FLAGS.use_fp16 else tf.float32
     images = tf.cast(images, dtype)
@@ -50,6 +37,7 @@ def get_input_train():
     #    image_batch = tf.image.random_contrast(image_batch, lower=0.2, upper=1.8)
     # Subtract off the mean and divide by the variance of the pixels.
     images = tf.image.per_image_whitening(images)
+    return images, labels
 
 # inference of res net
 def inference(images):
