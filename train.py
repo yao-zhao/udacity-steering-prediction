@@ -16,18 +16,21 @@ import tensorflow as tf
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('logdir', 'log/',
                             """Directory to keep log""")
+tf.app.flags.DEFINE_string('resnet_param', 'resnet_data/ResNet-50-transfer.ckpt',
+                            """resnet parameters to be transfered""")
 tf.app.flags.DEFINE_boolean('minimal_summaries', False,
                             """whether to log everything""")
 tf.app.flags.DEFINE_integer('max_epoch', 12,
-                            """how many epochs to run""")                            
-                            
+                            """how many epochs to run""")
+
+
 def train():
     with tf.Graph().as_default():
         # set flag to training
-        FLAGS.batch_size=32
+        FLAGS.batch_size=8
         FLAGS.is_training=True
         FLAGS.minimal_summaries=True
-        FLAGS.initial_learning_rate=5e-3
+        FLAGS.initial_learning_rate=1e-4
         FLAGS.stddev=5e-2
         FLAGS.weight_decay=5e-5
         # global step
@@ -35,7 +38,7 @@ def train():
         # get training batch
         images, labels = model.get_train_input()
         # inference
-        outputs = model.inference_small(images)
+        outputs = model.inference_resnet(images)
         # calculate total loss
         loss = model.loss(outputs, labels)
         # train operation
@@ -55,6 +58,11 @@ def train():
         config.gpu_options.allow_growth = True
         sess = tf.Session(config=config)
         sess.run(init)
+        # resnet saver
+        # saver_resnet = tf.train.Saver(tf.trainable_variables())
+        saver_resnet = tf.train.Saver([v for v in tf.trainable_variables()
+                                       if not "fc" in v.name])
+        saver_resnet.restore(sess, FLAGS.resnet_param)
         # start queue runner
         tf.train.start_queue_runners(sess=sess)
         # write summary

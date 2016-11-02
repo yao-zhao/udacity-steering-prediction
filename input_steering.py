@@ -22,8 +22,10 @@ tf.app.flags.DEFINE_string('test_file',
 tf.app.flags.DEFINE_string('test_dir', 'data/train',
                           """train directory""")
 tf.app.flags.DEFINE_integer('num_examples_train', 45000,
-                          """number of examples per epoch in training""")  
- 
+                          """number of examples per epoch in training""")
+
+IMAGENET_MEAN_BGR = [103.062623801, 115.902882574, 123.151630838, ]
+
 # parse the steering csv file
 def _read_steering_csv(image_list_file, datapath):
     f = open(image_list_file, 'r')
@@ -66,8 +68,8 @@ def _read_images_from_disk(input_queue):
     return example, label
 
 # generate batch
-def _generate_batch(image, label, batch_size, min_after_dequeue=10000,
-                    num_preprocess_threads=8):
+def _generate_batch(image, label, batch_size, min_after_dequeue=5000,
+                    num_preprocess_threads=6):
     capacity = min_after_dequeue + (num_preprocess_threads+1) * batch_size
     image_batch, label_batch = tf.train.shuffle_batch(
         [image, label],
@@ -79,12 +81,20 @@ def _generate_batch(image, label, batch_size, min_after_dequeue=10000,
 
 # data augmentation
 def _preprocess_image(image):
-    image  =tf.image.resize_images(image, [240, 320])
-    image = tf.random_crop(image, [224, 288, 3])
+    image  =tf.image.resize_images(image, [180, 240])
+    image = tf.random_crop(image, [160, 192, 3])
     image = tf.image.random_brightness(image, max_delta=63)
     image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
     image = tf.image.per_image_whitening(image)
     return image
+
+# image net preprocess on top of data augmentation
+def _imagenet_preprocess(rgb):
+    """Changes RGB [0,1] valued image to BGR [0,255] with mean subtracted."""
+    red, green, blue = tf.split(2, 3, rgb * 255.0)
+    bgr = tf.concat(2, [blue, green, red])
+    bgr -= IMAGENET_MEAN_BGR
+    return bgr
 
 # input pipline
 def input_pipline(batch_size, num_epochs=None,
@@ -101,5 +111,6 @@ def input_pipline(batch_size, num_epochs=None,
                                                 shuffle=True)
     image, label = _read_images_from_disk(input_queue)
     image = _preprocess_image(image)
+    image = _imagenet_preprocess(image)
     return _generate_batch(image, label, batch_size)
 
