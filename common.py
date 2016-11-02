@@ -150,12 +150,15 @@ def mean_squared_loss(outputs, labels):
     return loss
     
 # resnet block
-def res_block(x, numoutput):
+def res_block(x, numoutput, use_branch1=False, pool=False):
     shortcut = x  # branch 1
     internal_numfilters = numoutput/4
     with tf.variable_scope('branch2'):
         with tf.variable_scope('a'):
-            x = conv(x, internal_numfilters, ksize=1)
+            if pool:
+                x = conv(x, internal_numfilters, ksize=1, stride=2)
+            else:
+                x = conv(x, internal_numfilters, ksize=1)
             x = bn(x)
             x = activation(x)
         with tf.variable_scope('b'):
@@ -165,15 +168,28 @@ def res_block(x, numoutput):
         with tf.variable_scope('c'):
             x = conv(x, numoutput, ksize=1)
             x = bn(x)
-    with tf.variable_scope('branch1'):
-        shortcut = conv(shortcut, numoutput)
-        shortcut = bn(shortcut)
+    if use_branch1:
+        with tf.variable_scope('branch1'):
+            if pool:
+                shortcut = conv(shortcut, numoutput, ksize=1, stride=2)
+            else:
+                shortcut = conv(shortcut, numoutput, ksize=1)
+            shortcut = bn(shortcut)
     return activation(x + shortcut)
-    
+
 # stack of blocks
 def stack(x, func, numoutputs):
     for i, numoutput in zip(range(len(numoutputs)), numoutputs):
         with tf.variable_scope(chr(97+i)):
             x=func(x, numoutput)
     return x
-    
+
+# stack of resnet
+def res_stack(x, numoutputs, pool=False):
+    for i, numoutput in zip(range(len(numoutputs)), numoutputs):
+        with tf.variable_scope(chr(97+i)):
+            if i == 0:
+                x = res_block(x, numoutput, use_branch1=True, pool=pool)
+            else:
+                x = res_block(x, numoutput)
+    return x

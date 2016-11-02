@@ -61,17 +61,14 @@ def inference_resnet(images):
         conv1 = common.bn(conv1)
         pool1 = common.max_pool(conv1)
     with tf.variable_scope('2'):
-        stack2 = common.stack(pool1, common.res_block, [64, 64, 64])
-        pool2 = common.max_pool(stack2)
+        stack2 = common.res_stack(pool1, [256, 256, 256], pool=False)
     with tf.variable_scope('3'):
-        stack3 = common.stack(pool2, common.res_block, [128, 128, 128, 128])
-        pool3 = common.max_pool(stack3)
+        stack3 = common.res_stack(stack2, [512, 512, 512, 512])
     with tf.variable_scope('4'):
-        stack4 = common.stack(pool3, common.res_block, [256, 256, 256,
-                                                      256, 256, 256])
-        pool4 = common.max_pool(stack4)
+        stack4 = common.res_stack(stack3, [1024, 1024, 1024,
+                                           1024, 1024, 1024])
     with tf.variable_scope('5'):
-        stack5 = common.stack(pool4, common.res_block, [512, 512, 512])                                                     
+        stack5 = common.res_stack(stack4, [2048, 2048, 2048])
         pool5 = common.global_ave_pool(stack5)
     with tf.variable_scope('fc'):
         fc = common.fc(pool5, 1)
