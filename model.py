@@ -33,7 +33,29 @@ def get_train_input():
     return images, labels
 
 # inference of resnet
-def inference(images):
+def inference_small(images):
+    with tf.variable_scope('1'):
+        conv1 = common.conv(images, 64, ksize=7, stride=2)
+        conv1 = common.bn(conv1)
+        pool1 = common.max_pool(conv1)
+    with tf.variable_scope('2'):
+        stack2 = common.stack(pool1, common.res_block, [64, 64])
+        pool2 = common.max_pool(stack2)
+    with tf.variable_scope('3'):
+        stack3 = common.stack(pool2, common.res_block, [128, 128])
+        pool3 = common.max_pool(stack3)
+    with tf.variable_scope('4'):
+        stack4 = common.stack(pool3, common.res_block, [256, 256, 256])
+        pool4 = common.max_pool(stack4)
+    with tf.variable_scope('5'):
+        stack5 = common.stack(pool4, common.res_block, [512, 512])                                                     
+        pool5 = common.global_ave_pool(stack5)
+    with tf.variable_scope('fc'):
+        fc = common.fc(pool5, 1)
+    return fc
+
+# inference of resnet
+def inference_resnet(images):
     with tf.variable_scope('1'):
         conv1 = common.conv(images, 64, ksize=7, stride=2)
         conv1 = common.bn(conv1)
@@ -55,7 +77,6 @@ def inference(images):
         fc = common.fc(pool5, 1)
     return fc
 
-
 # loss 
 def loss(outputs, labels):
     common.mean_squared_loss(outputs, labels)
@@ -71,7 +92,7 @@ def train_op(total_loss, global_step):
                                     global_step,
                                     decay_steps,
                                     FLAGS.learning_rate_decay,
-                                    staircase=True)
+                                    staircase=False)
     # summary
     tf.scalar_summary('learning_rate', lr)
     tf.scalar_summary('total_loss', total_loss)

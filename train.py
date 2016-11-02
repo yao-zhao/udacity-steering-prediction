@@ -24,15 +24,18 @@ tf.app.flags.DEFINE_integer('max_epoch', 12,
 def train():
     with tf.Graph().as_default():
         # set flag to training
-        FLAGS.batch_size=8
+        FLAGS.batch_size=32
         FLAGS.is_training=True
         FLAGS.minimal_summaries=True
+        FLAGS.initial_learning_rate=5e-3
+        FLAGS.stddev=5e-2
+        FLAGS.weight_decay=5e-5
         # global step
         global_step = tf.Variable(0, trainable=False)
         # get training batch
         images, labels = model.get_train_input()
         # inference
-        outputs = model.inference(images)
+        outputs = model.inference_small(images)
         # calculate total loss
         loss = model.loss(outputs, labels)
         # train operation
