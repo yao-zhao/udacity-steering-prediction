@@ -11,6 +11,9 @@ log/
 *.ckpt
 devel/
 
+# exceptions
+!label_hist.png
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

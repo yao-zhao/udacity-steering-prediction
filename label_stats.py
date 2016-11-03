@@ -25,4 +25,11 @@ for line in f:
     elif frameid == 'right_camera':
         frameids.append(2)
 
-n, bins, patches = plt.hist(labels, 50, normed=1, facecolor='green', alpha=0.75)
+plt.figure(figsize=[8, 6])
+n, bins, patches = plt.hist(labels, 50, facecolor='green', alpha=0.75)
+plt.xlabel('steering angle')
+plt.ylabel('Probability')
+plt.axis([-10, 10, 0, np.max(n)*1.01])
+#plt.grid(True)
+
+plt.savefig('label_hist.png')
