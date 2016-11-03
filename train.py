@@ -29,9 +29,9 @@ def train():
         # set flag to training
         FLAGS.batch_size=8
         FLAGS.is_training=True
-        FLAGS.minimal_summaries=True
+        FLAGS.minimal_summaries=False
         FLAGS.initial_learning_rate=1e-4
-        FLAGS.stddev=5e-2
+        FLAGS.stddev=5e-1
         FLAGS.weight_decay=5e-5
         # global step
         global_step = tf.Variable(0, trainable=False)
