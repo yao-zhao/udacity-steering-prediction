@@ -27,12 +27,12 @@ tf.app.flags.DEFINE_integer('max_epoch', 12,
 def train():
     with tf.Graph().as_default():
         # set flag to training
-        FLAGS.batch_size=8
+        FLAGS.batch_size=1
         FLAGS.is_training=True
         FLAGS.minimal_summaries=False
-        FLAGS.initial_learning_rate=1e-4
-        FLAGS.stddev=5e-1
-        FLAGS.weight_decay=5e-5
+        FLAGS.initial_learning_rate=1e-3
+        FLAGS.stddev=5e-2
+        FLAGS.weight_decay=1e-6
         # global step
         global_step = tf.Variable(0, trainable=False)
         # get training batch
@@ -73,7 +73,8 @@ def train():
         print('total iteration:', str(max_iter))
         for step in xrange(max_iter):
               start_time = time.time()
-              _, loss_value = sess.run([train_op, loss])
+              # _, loss_value = sess.run([train_op, loss])
+              loss_value = sess.run(loss) # test inference time only
               duration = time.time() - start_time
               assert not np.isnan(loss_value), 'Model diverged with loss = NaN'
               
