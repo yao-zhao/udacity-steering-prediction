@@ -1,9 +1,9 @@
 train_net: "caffe_model/train_val.prototxt"
-# test_net: "models/resnet/val2.prototxt"
+test_net: "caffe_model/train_val.prototxt"
 type: "Nesterov"
-# test_iter: 128
+test_iter: 32
 # test_iter: 768
-test_interval: 0
+test_interval: 100
 test_initialization: false
 base_lr: 0.001
 lr_policy: "step"

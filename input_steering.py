@@ -166,17 +166,17 @@ def get_duplicate_labels():
         _duplicate_labels(filenames, labels, frameids, repeats, bins)
     return dup_filenames, dup_labels, dup_frameids
 
-def write_to_file(datafile='data/train.txt', caffefile='data/train_caffe.txt'):
+def write_to_file(datafile='data/all.txt', caffefile='data/train_caffe.txt'):
     dup_filenames, dup_labels, dup_frameids =  get_duplicate_labels()
-    with open(datafile,'+w') as file, open(caffefile, '+w') as caffefile:
+    with open(datafile,'+w') as file:#, open(caffefile, '+w') as caffefile:
         for filename, label, frameid in\
                 zip(dup_filenames, dup_labels, dup_frameids):
             file.write('%s,%f,%d\n' % (filename, label, frameid))
-            if frameid == 1:
-              caffefile.write('%s %f\n' % (filename, label))
+            # if frameid == 1:
+            #   caffefile.write('%s %f\n' % (filename, label))
     return dup_filenames, dup_labels, dup_frameids
 
-def read_from_file(datafile='data/train.txt'):
+def read_from_file(datafile='data/all.txt'):
     dup_filenames = []
     dup_labels = []
     dup_frameids = []

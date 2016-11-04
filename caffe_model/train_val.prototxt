@@ -4,6 +4,9 @@ layer {
   type: "ImageData"
   top: "data"
   top: "label"
+  include{
+    phase: TRAIN
+  }
   transform_param {
     mirror: false
     mean_value: 95
@@ -15,6 +18,32 @@ layer {
   image_data_param {
     source: "data/train_caffe.txt"
     batch_size: 24
+    shuffle: true
+    new_height: 180
+    new_width: 240
+    is_color: true
+    root_folder: ""
+  }
+}
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  include{
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    mean_value: 95
+    mean_value: 96
+    mean_value: 80
+    crop_h: 160
+    crop_w: 192
+  }
+  image_data_param {
+    source: "data/val_caffe.txt"
+    batch_size: 4
     shuffle: true
     new_height: 180
     new_width: 240
