@@ -166,12 +166,14 @@ def get_duplicate_labels():
         _duplicate_labels(filenames, labels, frameids, repeats, bins)
     return dup_filenames, dup_labels, dup_frameids
 
-def write_to_file(datafile='data/train.txt'):
+def write_to_file(datafile='data/train.txt', caffefile='data/train_caffe.txt'):
     dup_filenames, dup_labels, dup_frameids =  get_duplicate_labels()
-    with open(datafile,'+w') as file:
+    with open(datafile,'+w') as file, open(caffefile, '+w') as caffefile:
         for filename, label, frameid in\
                 zip(dup_filenames, dup_labels, dup_frameids):
-            file.write('%s,%f,%d' % (filename, label, frameid))
+            file.write('%s,%f,%d\n' % (filename, label, frameid))
+            if frameid == 1:
+              caffefile.write('%s %f\n' % (filename, label))
     return dup_filenames, dup_labels, dup_frameids
 
 def read_from_file(datafile='data/train.txt'):
@@ -197,10 +199,9 @@ def input_pipline(batch_size, num_epochs=None,
     else:
         print(datafile+' not exist not force create is on, start writing')
         filenames, labels, frameids = write_to_file(datafile=datafile)
-    image_list, label_list, frameid_list = \
-        get_duplicate_labels()
-    center_image_names, cent_labels = _split_list_to_tensor(image_list,
-                                                  label_list, frameid_list, 1)
+    center_image_names, cent_labels = _split_list_to_tensor(filenames,
+                                                  labels, frameids, 1)
+    print('total number of examples: ',len(labels)/3)
     input_queue = tf.train.slice_input_producer([center_image_names,
                                                  cent_labels],
                                                 num_epochs=None,
