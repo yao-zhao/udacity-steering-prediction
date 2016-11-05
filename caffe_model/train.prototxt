@@ -27,32 +27,32 @@ layer {
     root_folder: ""
   }
 }
-layer {
-  name: "data"
-  type: "ImageData"
-  top: "data"
-  top: "label"
-  include{
-    phase: TEST
-  }
-  transform_param {
-    mirror: false
-    mean_value: 103.062623801
-    mean_value: 115.902882574
-    mean_value: 123.151630838
-    crop_h: 96
-    crop_w: 128
-  }
-  image_data_param {
-    source: "data/val_caffe.txt"
-    batch_size: 4
-    shuffle: true
-    new_height: 120
-    new_width: 160
-    is_color: true
-    root_folder: ""
-  }
-}
+# layer {
+#   name: "data"
+#   type: "ImageData"
+#   top: "data"
+#   top: "label"
+#   include{
+#     phase: TEST
+#   }
+#   transform_param {
+#     mirror: false
+#     mean_value: 103.062623801
+#     mean_value: 115.902882574
+#     mean_value: 123.151630838
+#     crop_h: 96
+#     crop_w: 128
+#   }
+#   image_data_param {
+#     source: "data/val_caffe.txt"
+#     batch_size: 4
+#     shuffle: true
+#     new_height: 120
+#     new_width: 160
+#     is_color: true
+#     root_folder: ""
+#   }
+# }
 layer {
 	bottom: "data"
 	top: "conv1"
@@ -3504,8 +3504,8 @@ layer {
   # bottom: "res5c"
   bottom: "pool5"
   # bottom: "fc2"
-	top: "fc3"
-	name: "fc3"
+	top: "fc1"
+	name: "fc1"
 	type: "InnerProduct"
 	inner_product_param {
 		num_output: 1
@@ -3523,7 +3523,7 @@ layer {
 layer {
   name: "euclideanloss"
   type: "EuclideanLoss"
-  bottom: "fc3"
+  bottom: "fc1"
   bottom: "label"
   top: "euclideanloss"
   loss_weight: 1

@@ -139,7 +139,8 @@ def _get_hist(labels, numbins=50):
     return n, bins, patches
     
 # calculate repeat needed for equal sampling
-def _get_repeat(n, maxrepeat=50):
+def _get_repeat(n, maxrepeat=20):
+    n = np.sqrt(n)
     repeat = np.ceil(np.sqrt(np.max(n)/n)).astype(np.int)
     repeat[repeat>maxrepeat] = maxrepeat
     return repeat
@@ -212,3 +213,4 @@ def input_pipline(batch_size, num_epochs=None,
     label = _preprocess_label(label)
     return _generate_batch(image, label, batch_size)
 
+write_to_file()
