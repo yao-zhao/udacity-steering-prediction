@@ -12,55 +12,29 @@ layer {
     mean_value: 103.062623801
     mean_value: 115.902882574
     mean_value: 123.151630838
-    crop_h: 96
-    crop_w: 128
-    contrast_jitter_range: .3
-    rotation_range: 10
+    crop_h: 224
+    crop_w: 256
+    contrast_jitter_range: .1
+    # rotation_range: 10
   }
   image_data_param {
     source: "data/train_caffe.txt"
-    batch_size: 64
+    batch_size: 16
     shuffle: true
-    new_height: 120
-    new_width: 160
+    new_height: 240
+    new_width: 320
     is_color: true
     root_folder: ""
   }
 }
-# layer {
-#   name: "data"
-#   type: "ImageData"
-#   top: "data"
-#   top: "label"
-#   include{
-#     phase: TEST
-#   }
-#   transform_param {
-#     mirror: false
-#     mean_value: 103.062623801
-#     mean_value: 115.902882574
-#     mean_value: 123.151630838
-#     crop_h: 96
-#     crop_w: 128
-#   }
-#   image_data_param {
-#     source: "data/val_caffe.txt"
-#     batch_size: 4
-#     shuffle: true
-#     new_height: 120
-#     new_width: 160
-#     is_color: true
-#     root_folder: ""
-#   }
-# }
 layer {
 	bottom: "data"
 	top: "conv1"
 	name: "conv1"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -95,12 +69,12 @@ layer {
 	name: "scale_conv1"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -132,8 +106,8 @@ layer {
 	name: "res2a_branch1"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -169,12 +143,12 @@ layer {
 	name: "scale2a_branch1"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -187,8 +161,8 @@ layer {
 	name: "res2a_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -224,12 +198,12 @@ layer {
 	name: "scale2a_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -249,8 +223,8 @@ layer {
 	name: "res2a_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -286,12 +260,12 @@ layer {
 	name: "scale2a_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -311,8 +285,8 @@ layer {
 	name: "res2a_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -348,12 +322,12 @@ layer {
 	name: "scale2a_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -381,8 +355,8 @@ layer {
 	name: "res2b_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -418,12 +392,12 @@ layer {
 	name: "scale2b_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -443,8 +417,8 @@ layer {
 	name: "res2b_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -480,12 +454,12 @@ layer {
 	name: "scale2b_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -505,8 +479,8 @@ layer {
 	name: "res2b_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -542,12 +516,12 @@ layer {
 	name: "scale2b_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -575,8 +549,8 @@ layer {
 	name: "res2c_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -612,12 +586,12 @@ layer {
 	name: "scale2c_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -637,8 +611,8 @@ layer {
 	name: "res2c_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 64
@@ -674,12 +648,12 @@ layer {
 	name: "scale2c_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -699,8 +673,8 @@ layer {
 	name: "res2c_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -736,12 +710,12 @@ layer {
 	name: "scale2c_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -769,8 +743,8 @@ layer {
 	name: "res3a_branch1"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -806,12 +780,12 @@ layer {
 	name: "scale3a_branch1"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -824,8 +798,8 @@ layer {
 	name: "res3a_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -861,12 +835,12 @@ layer {
 	name: "scale3a_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -886,8 +860,8 @@ layer {
 	name: "res3a_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -923,12 +897,12 @@ layer {
 	name: "scale3a_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -948,8 +922,8 @@ layer {
 	name: "res3a_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -985,12 +959,12 @@ layer {
 	name: "scale3a_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1018,8 +992,8 @@ layer {
 	name: "res3b_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -1055,12 +1029,12 @@ layer {
 	name: "scale3b_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1080,8 +1054,8 @@ layer {
 	name: "res3b_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -1117,12 +1091,12 @@ layer {
 	name: "scale3b_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1142,8 +1116,8 @@ layer {
 	name: "res3b_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -1179,12 +1153,12 @@ layer {
 	name: "scale3b_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1212,8 +1186,8 @@ layer {
 	name: "res3c_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -1249,12 +1223,12 @@ layer {
 	name: "scale3c_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1274,8 +1248,8 @@ layer {
 	name: "res3c_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -1311,12 +1285,12 @@ layer {
 	name: "scale3c_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1336,8 +1310,8 @@ layer {
 	name: "res3c_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -1373,12 +1347,12 @@ layer {
 	name: "scale3c_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1406,8 +1380,8 @@ layer {
 	name: "res3d_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -1443,12 +1417,12 @@ layer {
 	name: "scale3d_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1468,8 +1442,8 @@ layer {
 	name: "res3d_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 128
@@ -1505,12 +1479,12 @@ layer {
 	name: "scale3d_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1530,8 +1504,8 @@ layer {
 	name: "res3d_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -1567,12 +1541,12 @@ layer {
 	name: "scale3d_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1600,8 +1574,8 @@ layer {
 	name: "res4a_branch1"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -1637,12 +1611,12 @@ layer {
 	name: "scale4a_branch1"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1655,8 +1629,8 @@ layer {
 	name: "res4a_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -1692,12 +1666,12 @@ layer {
 	name: "scale4a_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1717,8 +1691,8 @@ layer {
 	name: "res4a_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -1754,12 +1728,12 @@ layer {
 	name: "scale4a_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1779,8 +1753,8 @@ layer {
 	name: "res4a_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -1816,12 +1790,12 @@ layer {
 	name: "scale4a_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1849,8 +1823,8 @@ layer {
 	name: "res4b_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -1886,12 +1860,12 @@ layer {
 	name: "scale4b_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1911,8 +1885,8 @@ layer {
 	name: "res4b_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -1948,12 +1922,12 @@ layer {
 	name: "scale4b_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -1973,8 +1947,8 @@ layer {
 	name: "res4b_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -2010,12 +1984,12 @@ layer {
 	name: "scale4b_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2043,8 +2017,8 @@ layer {
 	name: "res4c_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2080,12 +2054,12 @@ layer {
 	name: "scale4c_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2105,8 +2079,8 @@ layer {
 	name: "res4c_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2142,12 +2116,12 @@ layer {
 	name: "scale4c_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2167,8 +2141,8 @@ layer {
 	name: "res4c_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -2204,12 +2178,12 @@ layer {
 	name: "scale4c_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2237,8 +2211,8 @@ layer {
 	name: "res4d_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2274,12 +2248,12 @@ layer {
 	name: "scale4d_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2299,8 +2273,8 @@ layer {
 	name: "res4d_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2336,12 +2310,12 @@ layer {
 	name: "scale4d_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2361,8 +2335,8 @@ layer {
 	name: "res4d_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -2398,12 +2372,12 @@ layer {
 	name: "scale4d_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2431,8 +2405,8 @@ layer {
 	name: "res4e_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2468,12 +2442,12 @@ layer {
 	name: "scale4e_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2493,8 +2467,8 @@ layer {
 	name: "res4e_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2530,12 +2504,12 @@ layer {
 	name: "scale4e_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2555,8 +2529,8 @@ layer {
 	name: "res4e_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -2592,12 +2566,12 @@ layer {
 	name: "scale4e_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2625,8 +2599,8 @@ layer {
 	name: "res4f_branch2a"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2662,12 +2636,12 @@ layer {
 	name: "scale4f_branch2a"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2687,8 +2661,8 @@ layer {
 	name: "res4f_branch2b"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 256
@@ -2724,12 +2698,12 @@ layer {
 	name: "scale4f_branch2b"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2749,8 +2723,8 @@ layer {
 	name: "res4f_branch2c"
 	type: "Convolution"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 1024
@@ -2786,12 +2760,12 @@ layer {
 	name: "scale4f_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2819,8 +2793,8 @@ layer {
 	name: "res5a_branch1"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 2048
@@ -2856,12 +2830,12 @@ layer {
 	name: "scale5a_branch1"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2874,8 +2848,8 @@ layer {
 	name: "res5a_branch2a"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -2911,12 +2885,12 @@ layer {
 	name: "scale5a_branch2a"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2936,8 +2910,8 @@ layer {
 	name: "res5a_branch2b"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -2973,12 +2947,12 @@ layer {
 	name: "scale5a_branch2b"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -2998,8 +2972,8 @@ layer {
 	name: "res5a_branch2c"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 2048
@@ -3035,12 +3009,12 @@ layer {
 	name: "scale5a_branch2c"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -3068,8 +3042,8 @@ layer {
 	name: "res5b_branch2a"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -3105,12 +3079,12 @@ layer {
 	name: "scale5b_branch2a"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -3130,8 +3104,8 @@ layer {
 	name: "res5b_branch2b"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -3167,12 +3141,12 @@ layer {
 	name: "scale5b_branch2b"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -3192,8 +3166,8 @@ layer {
 	name: "res5b_branch2c"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 2048
@@ -3229,12 +3203,12 @@ layer {
 	name: "scale5b_branch2c"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
    	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -3262,8 +3236,8 @@ layer {
 	name: "res5c_branch2a"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -3299,12 +3273,12 @@ layer {
 	name: "scale5c_branch2a"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}  	
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -3324,8 +3298,8 @@ layer {
 	name: "res5c_branch2b"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 512
@@ -3361,12 +3335,12 @@ layer {
 	name: "scale5c_branch2b"
 	type: "Scale"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true
@@ -3386,8 +3360,8 @@ layer {
 	name: "res5c_branch2c"
 	type: "Convolution"
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	convolution_param {
 		num_output: 2048
@@ -3423,12 +3397,12 @@ layer {
 	name: "scale5c_branch2c"
 	type: "Scale"
 	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
   	param {
-    	lr_mult: 0.1
-    	decay_mult: 0.1
+    	lr_mult: 1
+    	decay_mult: 1
   	}
 	scale_param {
 		bias_term: true

@@ -114,13 +114,18 @@ def _get_all_labels():
     frameids = []
     labels = []
     for image_list_file, datapath in zip(['data/train/interpolated.csv',
-                                          'data/train1/interpolated.csv',
-                                          'data/train2/interpolated.csv'],
+                                          'data/train2/interpolated.csv',
+                                          'data/trainEC1/interpolated.csv',
+                                          'data/trainEC2/interpolated.csv',
+                                          'data/Ch2-Train/interpolated.csv'],
                                          ['data/train',
-                                          'data/train1',
-                                          'data/train2']):
+                                          'data/train2',
+                                          'data/trainEC1',
+                                          'data/trainEC2',
+                                          'data/Ch2-Train']):
         _filename, _label, _frameid =\
             _read_steering_csv(image_list_file, datapath)
+        print('number of files in', image_list_file, 'is', len(_label))
         filenames.extend(_filename)
         labels.extend(_label)
         frameids.extend(_frameid)

@@ -12,15 +12,15 @@ layer {
     mean_value: 103.062623801
     mean_value: 115.902882574
     mean_value: 123.151630838
-    crop_h: 96
-    crop_w: 128
+    crop_h: 224
+    crop_w: 256
   }
   image_data_param {
     source: "data/val_caffe.txt"
-    batch_size: 16
+    batch_size: 8
     shuffle: true
-    new_height: 120
-    new_width: 160
+    new_height: 240
+    new_width: 320
     is_color: true
     root_folder: ""
   }

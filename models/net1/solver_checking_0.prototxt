@@ -1,0 +1,17 @@
+train_net: "models/net1/train_0.prototxt"
+test_net: "models/net1/test_0.prototxt"
+test_iter: 1
+test_interval: 500
+base_lr: 0.001
+display: 10
+max_iter: 1
+lr_policy: "step"
+gamma: 0.1
+momentum: 0.9
+weight_decay: 0.0001
+stepsize: 30000
+snapshot: 5000
+snapshot_prefix: "models/net1/stage_0"
+solver_mode: GPU
+test_initialization: true
+type: "SGD"
