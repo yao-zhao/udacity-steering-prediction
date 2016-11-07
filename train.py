@@ -20,9 +20,10 @@ tf.app.flags.DEFINE_string('resnet_param', 'resnet_data/ResNet-50-transfer.ckpt'
                             """resnet parameters to be transfered""")
 tf.app.flags.DEFINE_boolean('minimal_summaries', False,
                             """whether to log everything""")
-tf.app.flags.DEFINE_integer('max_epoch', 12,
+tf.app.flags.DEFINE_integer('max_epoch', 16,
                             """how many epochs to run""")
-
+tf.app.flags.DEFINE_string('gpu_id', '1',
+                            """which gpu to use""")
 
 def train_resnet():
     with tf.Graph().as_default():
@@ -85,7 +86,6 @@ def train_resnet():
                                 ' (%.1f examples/sec; %.3f sec/batch)')
                   print (format_str % (datetime.now(), step, loss_value,
                                        examples_per_sec, sec_per_batch))
-        
               if step % 200 == 0:
                   summary_str = sess.run(summary_op)
                   summary_writer.add_summary(summary_str, step)
@@ -97,33 +97,38 @@ def train_resnet():
 
 def train_nvidia():
     with tf.Graph().as_default():
-        FLAGS.batch_size=256
+        FLAGS.batch_size=512
         FLAGS.minimal_summaries=False
         FLAGS.initial_learning_rate=1e-3
         FLAGS.stddev=5e-2
         FLAGS.weight_decay=1e-4
         # global step
         global_step = tf.Variable(0, trainable=False)
-        # get training batch
-        images, labels = model.get_train_input()
-        # inference
-        outputs = model.inference_nvidianet(images)
-        # calculate total loss
-        loss = model.loss(outputs, labels)
-        # train operation
-        train_op = model.train_op(loss, global_step)
+        with tf.device("/gpu:"+FLAGS.gpu_id):
+            # train net
+            train_images, train_labels = model.get_train_input()
+            outputs_train = model.inference_nvidianet(train_images)
+            loss_train = model.loss(outputs_train, train_labels)
+            # validation net
+            val_images, val_labels = model.get_val_input()
+            tf.get_variable_scope().reuse_variables()
+            outputs_val = model.inference_nvidianet(val_images)
+            loss_val = model.loss(outputs_val, val_labels)
+            # train operation
+            train_op = model.train_op(loss_train, global_step)
         # saver
         saver = tf.train.Saver(tf.all_variables())
         # summarize
         if not FLAGS.minimal_summaries:
-            tf.image_summary('images', images)
+            tf.image_summary('images', train_images)
             for var in tf.trainable_variables():
                 tf.histogram_summary(var.op.name, var)
         summary_op = tf.merge_all_summaries()
         # initialize
         init = tf.initialize_all_variables()
         # Start running operations on the Graph.
-        config = tf.ConfigProto(log_device_placement=False)
+        config = tf.ConfigProto(log_device_placement=False,
+                                allow_soft_placement=True)
         config.gpu_options.allow_growth = True
         sess = tf.Session(config=config)
         sess.run(init)
@@ -137,11 +142,19 @@ def train_nvidia():
         print('total iteration:', str(max_iter))
         for step in xrange(max_iter):
               start_time = time.time()
-              _, loss_value = sess.run([train_op, loss])
+              _, loss_value = sess.run([train_op, loss_train])
               # loss_value = sess.run(loss) # test inference time only
               duration = time.time() - start_time
               assert not np.isnan(loss_value), 'Model diverged with loss = NaN'
               
+              if step % 200 == 0:
+                  val_iter = 16
+                  val_losses = np.zeros((val_iter))
+                  for ival in range(val_iter):
+                      val_loss_value = sess.run(loss_val)
+                      val_losses[ival] = val_loss_value
+                  print("mean validation loss:", np.mean(val_losses))
+
               if step % 10 == 0:
                   num_examples_per_step = FLAGS.batch_size
                   examples_per_sec = num_examples_per_step / duration

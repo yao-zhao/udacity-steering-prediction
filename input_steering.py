@@ -74,7 +74,7 @@ def _read_images_from_disk(input_queue):
 
 # generate batch
 def _generate_batch(image, label, batch_size, min_after_dequeue=5000,
-                    num_preprocess_threads=6):
+                    num_preprocess_threads=2):
     capacity = min_after_dequeue + (num_preprocess_threads+1) * batch_size
     image_batch, label_batch = tf.train.shuffle_batch(
         [image, label],
@@ -173,50 +173,86 @@ def get_duplicate_labels():
         _duplicate_labels(filenames, labels, frameids, repeats, bins)
     return dup_filenames, dup_labels, dup_frameids
 
-def write_to_file(datafile='data/all.txt', caffefile='data/train_caffe.txt'):
+def write_to_file(datafile='data/all.txt', ratio=10):
     dup_filenames, dup_labels, dup_frameids =  get_duplicate_labels()
-    with open(datafile,'+w') as file:#, open(caffefile, '+w') as caffefile:
+    with open(datafile,'w+') as file:
+        counter = 0
+        counter_train = 0
+        counter_val = 0
+        is_vals = []
         for filename, label, frameid in\
                 zip(dup_filenames, dup_labels, dup_frameids):
-            file.write('%s,%f,%d\n' % (filename, label, frameid))
+            counter += 1
+            if int(counter/5000) % ratio == 0:
+                is_val = 1
+                counter_val += 1
+            else:
+                is_val = 0
+                counter_train += 1
+            is_vals.append(is_val)
+            file.write('%s,%f,%d,%d\n' % (filename, label, frameid, is_val))
             # if frameid == 1:
             #   caffefile.write('%s %f\n' % (filename, label))
-    return dup_filenames, dup_labels, dup_frameids
+        print('write number of trains', counter_train)
+        print('write number of vals', counter_val)
+    return dup_filenames, dup_labels, dup_frameids, is_vals
 
 def read_from_file(datafile='data/all.txt'):
     dup_filenames = []
     dup_labels = []
     dup_frameids = []
+    dup_isvals = []
     with open(datafile,'r') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             dup_filenames.append(row[0])
             dup_labels.append(float(row[1]))
             dup_frameids.append(int(row[2]))
-    return dup_filenames, dup_labels, dup_frameids
+            dup_isvals.append(int(row[3]))
+    return dup_filenames, dup_labels, dup_frameids, dup_isvals
 
 # input pipline
-def input_pipline(batch_size, num_epochs=None,
+def input_pipline(batch_size, is_val=False, num_epochs=None,
                   force_create=False, datafile=FLAGS.datafile):
     # image_list, label_list, frameid_list = \
     #     _read_steering_csv(image_list_file=image_list_file,
     #                        datapath=datapath)
     if os.path.exists(datafile) and not force_create:
-        filenames, labels, frameids = read_from_file(datafile=datafile)
+        filenames, labels, frameids, is_vals = read_from_file(datafile=datafile)
     else:
         print(datafile+' not exist not force create is on, start writing')
-        filenames, labels, frameids = write_to_file(datafile=datafile)
-    center_image_names, cent_labels = _split_list_to_tensor(filenames,
-                                                  labels, frameids, 1)
-    print('total number of examples: ',cent_labels.get_shape())
-    input_queue = tf.train.slice_input_producer([center_image_names,
-                                                 cent_labels],
-                                                num_epochs=None,
-                                                shuffle=True)
-    image, label = _read_images_from_disk(input_queue)
-    image = _preprocess_image(image)
-    # image = _imagenet_preprocess(image)
-    label = _preprocess_label(label)
-    return _generate_batch(image, label, batch_size)
+        filenames, labels, frameids, is_vals = write_to_file(datafile=datafile)
+    print('number of total examples:', len(labels))
+    filenames1=[]
+    labels1=[]
+    frameids1=[]
+    print('is validation pahse',is_val)
+    for x, l, f, v in zip(filenames, labels, frameids, is_vals):
+        if (v==0 and not is_val) or (v==1 and is_val):
+            filenames1.append(x)
+            labels1.append(l)
+            frameids1.append(f)
+    print('number of examples:', len(labels1))
+
+    if is_val == 0:
+        scope = 'training'
+        num_threads = 4
+    else:
+        scope = 'validation'
+        num_threads = 1
+    with tf.variable_scope(scope):
+        center_image_names, cent_labels = _split_list_to_tensor(filenames1,
+                                                      labels1, frameids1, 1)
+        print('total number of examples: ',cent_labels.get_shape())
+        input_queue = tf.train.slice_input_producer([center_image_names,
+                                                     cent_labels],
+                                                    num_epochs=None,
+                                                    shuffle=True)
+        image, label = _read_images_from_disk(input_queue)
+        image = _preprocess_image(image)
+        # image = _imagenet_preprocess(image)
+        label = _preprocess_label(label)
+    return _generate_batch(image, label, batch_size,
+            num_preprocess_threads=num_threads)
 
 # write_to_file()
