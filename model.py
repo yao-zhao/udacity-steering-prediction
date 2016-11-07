@@ -74,6 +74,46 @@ def inference_resnet(images):
         fc = common.fc(pool5, 1)
     return fc
 
+# inference of nvidia
+def inference_nvidianet(images):
+    with tf.variable_scope('conv1'):
+        conv1 = common.activation(common.conv(images, 24, ksize=5, stride=2,
+                                              padding='VALID'))
+    with tf.variable_scope('conv2'):
+        conv2 = common.activation(common.conv(conv1, 36, ksize=5, stride=2,
+                                              padding='VALID'))
+    with tf.variable_scope('conv3'):
+        conv3 = common.activation(common.conv(conv2, 48, ksize=5, stride=2,
+                                              padding='VALID'))
+    with tf.variable_scope('conv4'):
+        conv4 = common.activation(common.conv(conv3, 64, ksize=3, stride=1,
+                                              padding='VALID'))
+    with tf.variable_scope('conv5'):
+        conv5 = common.activation(common.conv(conv4, 64, ksize=3, stride=1,
+                                              padding='VALID'))
+    with tf.variable_scope('conv6'):
+        conv6 = common.activation(common.conv(conv5, 64, ksize=3, stride=1,
+                                              padding='VALID'))
+    with tf.variable_scope('conv7'):
+        conv7 = common.activation(common.conv(conv6, 64, ksize=3, stride=1,
+                                              padding='VALID'))
+    conv7_flat = common.flatten(conv7)
+    with tf.variable_scope('fc1'):
+        fc1 = common.dropout(common.activation(common.fc(conv7_flat, 512)),
+                             0.5)
+    with tf.variable_scope('fc2'):
+        fc2 = common.dropout(common.activation(common.fc(fc1, 128)),
+                             0.625)
+    with tf.variable_scope('fc3'):
+        fc3 = common.dropout(common.activation(common.fc(fc2, 32)),
+                             0.75)
+    with tf.variable_scope('fc4'):
+        fc4 = common.dropout(common.activation(common.fc(fc3, 8)),
+                             0.875)
+    with tf.variable_scope('fc5'):
+        fc5 = tf.atan(common.fc(fc4, 1))
+    return fc5
+
 # loss 
 def loss(outputs, labels):
     common.mean_squared_loss(outputs, labels)

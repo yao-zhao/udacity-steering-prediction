@@ -40,7 +40,7 @@ def _get_variable(name,
     return var
 
 # single convolution layer
-def conv(x, numoutput, ksize=3, stride=1,
+def conv(x, numoutput, ksize=3, stride=1, padding='SAME',
          wd=None, stddev=None):
     if wd is None:
         wd = FLAGS.weight_decay
@@ -53,7 +53,7 @@ def conv(x, numoutput, ksize=3, stride=1,
                             shape=shape,
                             initializer=initializer,
                             weight_decay=wd)
-    return tf.nn.conv2d(x, weights, [1, stride, stride, 1], padding='SAME')
+    return tf.nn.conv2d(x, weights, [1, stride, stride, 1], padding=padding)
 
 # batch normalization
 def bn(x, moving_average_decay=None, bn_epsilon=None):
@@ -101,7 +101,11 @@ def bn(x, moving_average_decay=None, bn_epsilon=None):
 # activation
 def activation(x):
     return tf.nn.relu(x)
-    
+
+# flatten
+def flatten(x):
+    return tf.reshape(x, [x.get_shape()[0].value, -1])
+
 # max pool
 def max_pool(x, ksize=3, stride=2):
     return tf.nn.max_pool(x,
@@ -131,6 +135,11 @@ def fc(x, numoutput, wd=None, stddev=None):
                            initializer=tf.zeros_initializer)
     x = tf.nn.xw_plus_b(x, weights, biases)
     return x
+
+# dropout
+def dropout(x, keep_prob):
+    prob = tf.constant(keep_prob, dtype=tf.float32, name='keep_prob')
+    return tf.nn.dropout(x, prob)
 
 ## softmax loss
 #def softmax_loss(logits, labels):

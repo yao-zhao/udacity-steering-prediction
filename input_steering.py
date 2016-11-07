@@ -9,7 +9,7 @@ from tensorflow.python.framework import dtypes
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('datafile',
-                           'data/train.txt',
+                           'data/all.txt',
                            """processed duplicated of train data""")   
 tf.app.flags.DEFINE_string('train_file',
                            'data/train/interpolated.csv',
@@ -26,7 +26,7 @@ tf.app.flags.DEFINE_string('test_file',
                            """image list of training set""")   
 tf.app.flags.DEFINE_string('test_dir', 'data/train',
                           """train directory""")
-tf.app.flags.DEFINE_integer('num_examples_train', 45000,
+tf.app.flags.DEFINE_integer('num_examples_train', 800e3,
                           """number of examples per epoch in training""")
 
 IMAGENET_MEAN_BGR = [103.062623801, 115.902882574, 123.151630838, ]
@@ -86,11 +86,12 @@ def _generate_batch(image, label, batch_size, min_after_dequeue=5000,
 
 # data augmentation
 def _preprocess_image(image):
-    image  =tf.image.resize_images(image, [180, 240])
-    image = tf.random_crop(image, [160, 192, 3])
+    image = tf.image.resize_images(image, [120, 160])
+    image = tf.image.resize_image_with_crop_or_pad(image, 116, 156)
+    # image = tf.random_crop(image, [160, 192, 3])
     # image = tf.image.random_brightness(image, max_delta=63)
-    # image = tf.image.random_contrast(image, lower=0.2, upper=1.8)
-    # image = tf.image.per_image_whitening(image)
+    image = tf.image.random_contrast(image, lower=0.5, upper=1.5)
+    image = tf.image.per_image_whitening(image)
     return image
 
 # process label
@@ -144,7 +145,7 @@ def _get_hist(labels, numbins=50):
     return n, bins, patches
     
 # calculate repeat needed for equal sampling
-def _get_repeat(n, maxrepeat=20):
+def _get_repeat(n, maxrepeat=10):
     n = np.sqrt(n)
     repeat = np.ceil(np.sqrt(np.max(n)/n)).astype(np.int)
     repeat[repeat>maxrepeat] = maxrepeat
@@ -190,8 +191,8 @@ def read_from_file(datafile='data/all.txt'):
         csvreader = csv.reader(csvfile, delimiter=',')
         for row in csvreader:
             dup_filenames.append(row[0])
-            dup_labels.append(row[1])
-            dup_frameids.append(row[2])
+            dup_labels.append(float(row[1]))
+            dup_frameids.append(int(row[2]))
     return dup_filenames, dup_labels, dup_frameids
 
 # input pipline
@@ -207,15 +208,15 @@ def input_pipline(batch_size, num_epochs=None,
         filenames, labels, frameids = write_to_file(datafile=datafile)
     center_image_names, cent_labels = _split_list_to_tensor(filenames,
                                                   labels, frameids, 1)
-    print('total number of examples: ',len(labels)/3)
+    print('total number of examples: ',cent_labels.get_shape())
     input_queue = tf.train.slice_input_producer([center_image_names,
                                                  cent_labels],
                                                 num_epochs=None,
                                                 shuffle=True)
     image, label = _read_images_from_disk(input_queue)
     image = _preprocess_image(image)
-    image = _imagenet_preprocess(image)
+    # image = _imagenet_preprocess(image)
     label = _preprocess_label(label)
     return _generate_batch(image, label, batch_size)
 
-write_to_file()
+# write_to_file()
