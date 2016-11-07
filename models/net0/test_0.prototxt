@@ -1,4 +1,4 @@
-name: "net1"
+name: "net0"
 layer {
   name: "data"
   type: "ImageData"

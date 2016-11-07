@@ -1,4 +1,4 @@
-name: "net1"
+name: "net0"
 layer {
   name: "data"
   type: "ImageData"
@@ -10,8 +10,8 @@ layer {
     mean_value: 128
   }
   image_data_param {
-    source: "data/val_caffe.txt"
-    batch_size: 32
+    source: "data/train_caffe.txt"
+    batch_size: 512
     shuffle: true
     new_height: 192
     new_width: 256

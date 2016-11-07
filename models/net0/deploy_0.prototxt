@@ -1,23 +1,15 @@
-name: "net1"
+name: "net0"
 layer {
   name: "data"
-  type: "ImageData"
+  type: "Input"
   top: "data"
-  top: "label"
-  transform_param {
-    scale: 0.00390625
-    mirror: false
-    mean_value: 128
-  }
-  image_data_param {
-    source: "data/val_caffe.txt"
-    batch_size: 32
-    shuffle: true
-    new_height: 192
-    new_width: 256
-    is_color: true
-    root_folder: ""
-    label_scale: 1
+  input_param {
+    shape {
+      dim: 1
+      dim: 3
+      dim: 480
+      dim: 640
+    }
   }
 }
 layer {
@@ -25,22 +17,12 @@ layer {
   type: "Convolution"
   bottom: "data"
   top: "Convolution1"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 32
     bias_term: true
     pad: 3
     kernel_size: 7
     stride: 2
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -48,22 +30,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution1"
   top: "Convolution2"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 32
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -71,22 +43,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution2"
   top: "Convolution3"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 32
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 2
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -94,22 +56,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution3"
   top: "Convolution4"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 64
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -117,22 +69,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution4"
   top: "Convolution5"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 64
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 2
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -140,22 +82,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution5"
   top: "Convolution6"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 128
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -163,22 +95,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution6"
   top: "Convolution7"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 128
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 2
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -186,22 +108,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution7"
   top: "Convolution8"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 256
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -209,22 +121,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution8"
   top: "Convolution9"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 256
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 2
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -232,22 +134,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution9"
   top: "Convolution10"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 512
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -255,22 +147,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution10"
   top: "Convolution11"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 512
     bias_term: true
     pad: 1
     kernel_size: 3
     stride: 2
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -278,22 +160,12 @@ layer {
   type: "Convolution"
   bottom: "Convolution11"
   top: "conv1"
-  param {
-    lr_mult: 1
-  }
   convolution_param {
     num_output: 512
     bias_term: true
     pad: 0
     kernel_size: 3
     stride: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -301,21 +173,8 @@ layer {
   type: "InnerProduct"
   bottom: "conv1"
   top: "fc1"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   inner_product_param {
     num_output: 256
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -338,21 +197,8 @@ layer {
   type: "InnerProduct"
   bottom: "fc1"
   top: "fc2"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   inner_product_param {
     num_output: 64
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -375,21 +221,8 @@ layer {
   type: "InnerProduct"
   bottom: "fc2"
   top: "fc3"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   inner_product_param {
     num_output: 8
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
 }
 layer {
@@ -403,28 +236,7 @@ layer {
   type: "InnerProduct"
   bottom: "fc3"
   top: "fc4"
-  param {
-    lr_mult: 1
-  }
-  param {
-    lr_mult: 1
-  }
   inner_product_param {
     num_output: 1
-    weight_filler {
-      type: "xavier"
-    }
-    bias_filler {
-      type: "constant"
-      value: 0
-    }
   }
-}
-layer {
-  name: "euclideanloss"
-  type: "EuclideanLoss"
-  bottom: "fc4"
-  bottom: "label"
-  top: "euclideanloss"
-  loss_weight: 1
 }

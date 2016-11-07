@@ -1,8 +1,8 @@
-train_net: "models/net1/train_0.prototxt"
-test_net: "models/net1/test_0.prototxt"
-test_iter: 512
-test_interval: 200
-base_lr: 0.01
+train_net: "models/net0/train_0.prototxt"
+test_net: "models/net0/test_0.prototxt"
+test_iter: 256
+test_interval: 100
+base_lr: 0.001
 display: 10
 max_iter: 120000
 lr_policy: "step"
@@ -11,7 +11,7 @@ momentum: 0.9
 weight_decay: 0.0001
 stepsize: 30000
 snapshot: 5000
-snapshot_prefix: "models/net1/stage_0"
+snapshot_prefix: "models/net0/stage_0"
 solver_mode: GPU
 test_initialization: false
 iter_size: 1
