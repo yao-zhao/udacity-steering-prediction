@@ -54,3 +54,42 @@ def net1(n):
 
 net = b.BuildNet(net1, name = 'net1', caffe_path = caffe_path)
 net.save()
+
+def net2(n):
+    n.add_image(batch_size = 512, test_batch_size = 32,
+        transformer_dict = dict(mirror = False, 
+        mean_value=128, scale=0.00390625
+        # crop_h=224, crop_w=288,
+        ),
+        label_scale=1,
+        root_folder='', is_color=True, shuffle=True, test_shuffle=True,
+        source_train='train_caffe.txt', source_test='val_caffe.txt',
+        height = 192, width = 256)
+    bins = [0.01, 0.03, 0.05, 0.075, 0.1, 0.15,
+            0.2, 0.3, 0.4, 0.5, 0.7,
+            1, 2, 3, 4, 5, 6]
+    reversebins = list(bins)
+    reversebins.reverse()
+    bins = [-x for x in reversebins]+bins
+    print('bins:',bins)
+    n.add_discrete_label(bins)
+    n.add_conv(32, kernel_size=7, stride=2, pad=3, bias_term=True)
+    for numoutput in [32, 64, 128, 256, 512]:
+        n.add_conv(numoutput, bias_term=True)
+        n.add_conv(numoutput, stride=2, bias_term=True)
+    n.add_conv(512, pad=0, bias_term=True)
+    n.add_fc(256)
+    n.add_relu()
+    n.add_dropout(.5)
+    n.add_fc(64)
+    n.add_relu()
+    n.add_dropout(.25)
+    n.add_fc(len(bins))
+    n.add_softmax()
+    n.add_solver_sdg(test_interval = 200, test_iter = 512,
+                max_iter = 12e4, base_lr = 0.01, momentum = 0.9,
+                weight_decay = 1e-4, gamma = 0.1, stepsize = 3e4,
+                display = 10, snapshot = 5e3, iter_size = 1)
+
+net = b.BuildNet(net2, name = 'net4', caffe_path = caffe_path)
+net.save()

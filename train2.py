@@ -31,8 +31,8 @@ def train_nvidia():
         FLAGS.batch_size=512
         FLAGS.minimal_summaries=False
         FLAGS.initial_learning_rate=1e-3
-        FLAGS.stddev=5e-2
-        FLAGS.weight_decay=1e-4
+        FLAGS.stddev=0.1
+        FLAGS.weight_decay=1e-5
         # global step
         global_step = tf.Variable(0, trainable=False)
         with tf.device("/gpu:"+FLAGS.gpu_id):

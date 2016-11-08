@@ -173,8 +173,11 @@ def get_duplicate_labels():
         _duplicate_labels(filenames, labels, frameids, repeats, bins)
     return dup_filenames, dup_labels, dup_frameids
 
-def write_to_file(datafile='data/all.txt', ratio=10):
-    dup_filenames, dup_labels, dup_frameids =  get_duplicate_labels()
+def write_to_file(datafile='data/all.txt', ratio=10, use_dup=True):
+    if use_dup:
+        dup_filenames, dup_labels, dup_frameids =  get_duplicate_labels()
+    else:
+        dup_filenames, dup_labels, dup_frameids = _get_all_labels()
     with open(datafile,'w+') as file:
         counter = 0
         counter_train = 0

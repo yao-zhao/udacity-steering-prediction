@@ -1,5 +1,6 @@
 # src/
-log/
+log
+log2
 *.DS_Store
 .catkin_workspace
 *.bag
@@ -14,7 +15,9 @@ devel/
 *.txt
 *.yaml
 *.solverstate
-
+*.ckpt*
+*.meta
+*.tfevents*
 
 # exceptions
 !label_hist.png

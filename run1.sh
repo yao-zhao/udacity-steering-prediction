@@ -14,7 +14,7 @@ source ~/.bashrc
 force_precheck=true
 force_train=true
 gpu=1
-allnetnames=("net1")
+allnetnames=("net4")
 
 python3 gen_net1.py
 

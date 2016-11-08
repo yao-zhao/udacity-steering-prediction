@@ -66,7 +66,7 @@ def inference_small(images):
         stack4 = common.stack(pool3, common.res_block, [256, 256, 256])
         pool4 = common.max_pool(stack4)
     with tf.variable_scope('5'):
-        stack5 = common.stack(pool4, common.res_block, [512, 512])                                                     
+        stack5 = common.stack(pool4, common.res_block, [512, 512])
         pool5 = common.global_ave_pool(stack5)
     with tf.variable_scope('fc'):
         fc = common.fc(pool5, 1)
