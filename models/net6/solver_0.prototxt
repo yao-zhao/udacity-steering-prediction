@@ -1,5 +1,5 @@
-train_net: "models/net4/train_0.prototxt"
-test_net: "models/net4/test_0.prototxt"
+train_net: "models/net6/train_0.prototxt"
+test_net: "models/net6/test_0.prototxt"
 test_iter: 16
 test_interval: 100
 base_lr: 0.001
@@ -11,7 +11,7 @@ momentum: 0.9
 weight_decay: 1e-05
 stepsize: 10000
 snapshot: 5000
-snapshot_prefix: "models/net4/stage_0"
+snapshot_prefix: "models/net6/stage_0"
 solver_mode: GPU
 test_initialization: false
 iter_size: 1

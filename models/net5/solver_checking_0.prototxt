@@ -1,5 +1,5 @@
-train_net: "models/net4/train_0.prototxt"
-test_net: "models/net4/test_0.prototxt"
+train_net: "models/net5/train_0.prototxt"
+test_net: "models/net5/test_0.prototxt"
 test_iter: 1
 test_interval: 100
 base_lr: 0.001
@@ -9,9 +9,9 @@ lr_policy: "step"
 gamma: 0.1
 momentum: 0.9
 weight_decay: 1e-05
-stepsize: 10000
+stepsize: 20000
 snapshot: 5000
-snapshot_prefix: "models/net4/stage_0"
+snapshot_prefix: "models/net5/stage_0"
 solver_mode: GPU
 test_initialization: true
 iter_size: 1

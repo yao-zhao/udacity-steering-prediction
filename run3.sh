@@ -14,9 +14,9 @@ source ~/.bashrc
 force_precheck=true
 force_train=true
 gpu=0
-allnetnames=("net3")
+allnetnames=("net6")
 
-python3 gen_net3.py
+python3 gen_net1.py
 
 set -e
 export GLOG_minloglevel=2

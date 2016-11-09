@@ -1,4 +1,4 @@
-name: "net4"
+name: "net5"
 layer {
   name: "data"
   type: "Input"
@@ -165,8 +165,8 @@ layer {
   }
 }
 layer {
-  name: "softmaxprob"
+  name: "softmax_decay_prob"
   type: "Softmax"
   bottom: "fc1"
-  top: "softmaxprob"
+  top: "softmax_decay_prob"
 }

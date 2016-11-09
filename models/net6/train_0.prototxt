@@ -1,4 +1,4 @@
-name: "net4"
+name: "net6"
 layer {
   name: "data"
   type: "ImageData"
@@ -8,10 +8,11 @@ layer {
     scale: 0.00390625
     mirror: false
     mean_value: 128
+    contrast_jitter_range: 0.3
   }
   image_data_param {
     source: "data/train_caffe.txt"
-    batch_size: 512
+    batch_size: 256
     shuffle: true
     new_height: 192
     new_width: 256
@@ -338,14 +339,14 @@ layer {
   }
 }
 layer {
-  name: "softmaxloss"
-  type: "SoftmaxWithLoss"
+  name: "softmax_decay_loss"
+  type: "SoftmaxWithDecayLoss"
   bottom: "fc1"
   bottom: "Discretize1"
-  top: "softmaxloss"
+  top: "softmax_decay_loss"
   loss_weight: 1
-  loss_param {
-    weight_by_label_freqs: false
+  softmax_decay_loss_param {
+    rate: 1.5
   }
 }
 layer {
