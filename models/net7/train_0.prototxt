@@ -1,0 +1,376 @@
+name: "net7"
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "label"
+  transform_param {
+    scale: 0.00390625
+    mirror: false
+    mean_value: 128
+    contrast_jitter_range: 0.3
+  }
+  image_data_param {
+    source: "data/train_caffe.txt"
+    batch_size: 256
+    shuffle: true
+    new_height: 192
+    new_width: 256
+    is_color: true
+    root_folder: ""
+    label_scale: 1
+  }
+}
+layer {
+  name: "Convolution1"
+  type: "Convolution"
+  bottom: "data"
+  top: "Convolution1"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 32
+    bias_term: true
+    pad: 3
+    kernel_size: 7
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution2"
+  type: "Convolution"
+  bottom: "Convolution1"
+  top: "Convolution2"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 32
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution3"
+  type: "Convolution"
+  bottom: "Convolution2"
+  top: "Convolution3"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 32
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution4"
+  type: "Convolution"
+  bottom: "Convolution3"
+  top: "Convolution4"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 64
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution5"
+  type: "Convolution"
+  bottom: "Convolution4"
+  top: "Convolution5"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 64
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution6"
+  type: "Convolution"
+  bottom: "Convolution5"
+  top: "Convolution6"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 128
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution7"
+  type: "Convolution"
+  bottom: "Convolution6"
+  top: "Convolution7"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 128
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution8"
+  type: "Convolution"
+  bottom: "Convolution7"
+  top: "Convolution8"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 256
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution9"
+  type: "Convolution"
+  bottom: "Convolution8"
+  top: "Convolution9"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 256
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "Convolution10"
+  type: "Convolution"
+  bottom: "Convolution9"
+  top: "Convolution10"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 512
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "Convolution10"
+  top: "conv1"
+  param {
+    lr_mult: 1
+  }
+  convolution_param {
+    num_output: 512
+    bias_term: true
+    pad: 1
+    kernel_size: 3
+    stride: 2
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "fc1"
+  type: "InnerProduct"
+  bottom: "conv1"
+  top: "fc1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 1
+  }
+  inner_product_param {
+    num_output: 35
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "discrete_label"
+  type: "Discretize"
+  bottom: "label"
+  top: "discrete_label"
+  top: "label_centers"
+  discretize_param {
+    separator: -6
+    separator: -5
+    separator: -4
+    separator: -3
+    separator: -2
+    separator: -1
+    separator: -0.7
+    separator: -0.5
+    separator: -0.4
+    separator: -0.3
+    separator: -0.2
+    separator: -0.15
+    separator: -0.1
+    separator: -0.075
+    separator: -0.05
+    separator: -0.03
+    separator: -0.01
+    separator: 0.01
+    separator: 0.03
+    separator: 0.05
+    separator: 0.075
+    separator: 0.1
+    separator: 0.15
+    separator: 0.2
+    separator: 0.3
+    separator: 0.4
+    separator: 0.5
+    separator: 0.7
+    separator: 1
+    separator: 2
+    separator: 3
+    separator: 4
+    separator: 5
+    separator: 6
+  }
+}
+layer {
+  name: "softmax_decay_loss"
+  type: "SoftmaxWithDecayLoss"
+  bottom: "fc1"
+  bottom: "discrete_label"
+  top: "softmax_decay_loss"
+  top: "softmax_decay_softmax"
+  loss_weight: 1
+  loss_weight: 0
+  softmax_decay_loss_param {
+    rate: 1.5
+  }
+}
+layer {
+  name: "softmax_decay_accuracy"
+  type: "Accuracy"
+  bottom: "fc1"
+  bottom: "label"
+  top: "softmax_decay_accuracy"
+}
+layer {
+  name: "softmax_decay_interpolated_label"
+  type: "SoftmaxInterpolation"
+  bottom: "softmax_decay_softmax"
+  bottom: "label_centers"
+  top: "softmax_decay_interpolated_label"
+}
+layer {
+  name: "softmax_decay_euclidean_loss"
+  type: "EuclideanLoss"
+  bottom: "softmax_decay_interpolated_label"
+  bottom: "label"
+  top: "softmax_decay_euclidean_loss"
+  loss_weight: 0
+}

@@ -151,7 +151,7 @@ def dropout(x, keep_prob):
 #    loss_ = tf.add_n([cross_entropy_mean] + regularization_losses)
 ##    tf.scalar_summary('loss', loss_)
 #    return loss_
-    
+
 # euclidean loss
 def mean_squared_loss(outputs, labels):
     loss = tf.reduce_mean(tf.squared_difference(outputs, labels))

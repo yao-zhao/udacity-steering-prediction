@@ -14,12 +14,12 @@ source ~/.bashrc
 force_precheck=true
 force_train=true
 gpu=0
-allnetnames=("net6")
+allnetnames=("net7")
 
-python3 gen_net1.py
+python3 gen_net7.py
 
 set -e
-export GLOG_minloglevel=2
+# export GLOG_minloglevel=2
 for netname in ${allnetnames[@]}; do
 if [ -f "models/$netname/log_checking.txt" ] && [ ! $force_precheck == true ];
 then
