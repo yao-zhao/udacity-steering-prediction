@@ -10,7 +10,7 @@ import os
 os.environ["GLOG_minloglevel"] = "2"
 
 def net7(n):
-    n.add_image(batch_size = 256, test_batch_size = 32,
+    n.add_image(batch_size = 512, test_batch_size = 32,
         transformer_dict = dict(mirror = False,
         mean_value=128, scale=0.00390625,
         contrast_jitter_range=0.3
@@ -31,7 +31,7 @@ def net7(n):
         n.add_conv(numoutput, bias_term=True)
         n.add_conv(numoutput, stride=2, bias_term=True)
     n.add_fc(len(bins)+1)
-    n.add_softmax_decay(bins, decay_rate = 1.5)
+    n.add_softmax_decay(bins, decay_rate = 2)
     n.add_solver_sdg(test_interval = 100, test_iter = 16,
                 max_iter = 4e4, base_lr = 0.001, momentum = 0.9,
                 weight_decay = 1e-5, gamma = 0.1, stepsize = 1e4,

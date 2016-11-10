@@ -12,7 +12,7 @@ layer {
   }
   image_data_param {
     source: "data/train_caffe.txt"
-    batch_size: 256
+    batch_size: 512
     shuffle: true
     new_height: 192
     new_width: 256
@@ -349,13 +349,13 @@ layer {
   loss_weight: 1
   loss_weight: 0
   softmax_decay_loss_param {
-    rate: 1.5
+    rate: 2
   }
 }
 layer {
   name: "softmax_decay_accuracy"
   type: "Accuracy"
-  bottom: "fc1"
+  bottom: "softmax_decay_softmax"
   bottom: "label"
   top: "softmax_decay_accuracy"
 }

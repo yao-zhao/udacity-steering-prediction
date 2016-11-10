@@ -13,7 +13,7 @@ source ~/.bashrc
 # set initial param
 force_precheck=true
 force_train=true
-gpu=0
+gpu=1
 allnetnames=("net7")
 
 python3 gen_net7.py
